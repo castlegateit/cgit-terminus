@@ -15,13 +15,14 @@ Terminus is designed to act as a starting point for theme development. Any of it
 
 The best way to customize Terminus is to use a child theme. You can use this to replace any of the template files in Terminus. The file `functions.php` is a special case: the parent version will always be loaded, but only _after_ the child version. Therefore, you can use the child `functions.php` to override any of the functions in the main Terminus file. Here are the default functions that you can redefine:
 
-*   `terminus_init()`: used to add theme features, such as editor styles, feed links, and featured images.
-*   `terminus_head_init()`: removes certain WordPress header actions.
-*   `terminus_scripts_init()`: loads CSS and JavaScript files. You should always enqueue CSS and JavaScript files properly. By default, this function will load a basic CSS reset. When used _without_ a child theme, it will also load a simple layout for Terminus.
-*   `terminus_nav_init()`: registers the navigation menu(s).
-*   `terminus_widgets_init()`: registers the widget area(s).
-*   `terminus_pagination()`: returns a pagination list for indexes and archives.
-*   `terminus_taxonomy()`: returns a list of terms in a taxonomy for a particular post, without the invalid WordPress `rel` attributes.
+*   `terminus_init()` is used to add theme features, such as editor styles, feed links, and featured images.
+*   `terminus_head_init()` removes certain WordPress header actions.
+*   `terminus_scripts_init()` loads CSS and JavaScript files. You should always enqueue CSS and JavaScript files properly. By default, this function will load a basic CSS reset. When used _without_ a child theme, it will also load a simple layout for Terminus.
+*   `terminus_nav_init()` registers the navigation menu(s).
+*   `terminus_widgets_init()` registers the widget area(s).
+*   `terminus_title()` is used to generate the page title.
+*   `terminus_pagination()` returns a pagination list for indexes and archives.
+*   `terminus_taxonomy()` returns a list of terms in a taxonomy for a particular post, without the invalid WordPress `rel` attributes.
 
 Defining functions with these names in your child theme will override the functions defined in Terminus. You can also add your own functions and leave these alone if, for example, you want to load the default scripts and some more of your own. Take a look at the [minimal child theme template](https://github.com/castlegateit/terminus-child-template) and the [example child theme](https://github.com/castlegateit/terminus-child-example) to see how all this works.
 
