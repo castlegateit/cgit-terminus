@@ -363,14 +363,14 @@ input[type="button"]:focus,
 input[type="button"]:hover,
 input[type="submit"]:focus,
 input[type="submit"]:hover {
-    background: #fff;
-    background: linear-gradient(0deg, #d6d6d6, #fff);
+    border-color: #adadad;
 }
 
 button:active,
 input[type="button"]:active,
 input[type="submit"]:active {
-    background: #d6d6d6;
+    background: #ebebeb;
+    border-color: #d6d6d6;
 }
 
 /* Screen > 60em */
