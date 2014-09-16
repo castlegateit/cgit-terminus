@@ -26,6 +26,8 @@ The best way to customize Terminus is to use a child theme. You can use this to 
 
 Defining functions with these names in your child theme will override the functions defined in Terminus. You can also add your own functions and leave these alone if, for example, you want to load the default scripts and some more of your own. Take a look at the [minimal child theme template](https://github.com/castlegateit/terminus-child-template) and the [example child theme](https://github.com/castlegateit/terminus-child-example) to see how all this works.
 
+Note that Terminus must be installed in a folder named `terminus` for child themes to work.
+
 ## Development ##
 
 Terminus should act as a foundation and it should be possible to update it in place without breaking child themes and plugins. Therefore, please be careful not to change core parts of theme in a way that will break other sites. Before making any changes, you should also read the official WordPress guidelines for theme development:
