@@ -305,10 +305,13 @@ label {
 }
 
 input[type="email"],
+input[type="number"],
 input[type="password"],
 input[type="search"],
+input[type="tel"],
 input[type="text"],
 input[type="url"],
+select,
 textarea {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -326,10 +329,13 @@ textarea {
 }
 
 .main input[type="email"],
+.main input[type="number"],
 .main input[type="password"],
 .main input[type="search"],
+.main input[type="tel"],
 .main input[type="text"],
-.main input[type="url"] {
+.main input[type="url"],
+.main select {
     max-width: 24em;
 }
 
@@ -338,8 +344,10 @@ textarea {
 }
 
 input[type="email"]:focus,
+input[type="number"]:focus,
 input[type="password"]:focus,
 input[type="search"]:focus,
+input[type="tel"]:focus,
 input[type="text"]:focus,
 input[type="url"]:focus,
 textarea:focus {
