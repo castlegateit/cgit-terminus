@@ -186,7 +186,7 @@ if ( ! function_exists('terminus_pagination') ) {
  */
 if ( ! function_exists('terminus_taxonomy') ) {
 
-    function terminus_taxonomy ($taxon = 'category', $before = '', $sep = '', $after = '', $exclude = FALSE) {
+    function terminus_taxonomy ($taxon = 'category', $before = '', $sep = ', ', $after = '', $exclude = FALSE) {
 
         global $post;
         $terms = get_the_terms($post->ID, $taxon);
