@@ -44,7 +44,6 @@ The most important thing is to remember that themes are only for presentation. T
 
 *   [Lock Pages](https://wordpress.org/plugins/lock-pages/) restricts page editing by non-admin users.
 *   [Login Lockdown](https://wordpress.org/plugins/login-lockdown/) restricts login attempts for additional security.
-*   [WP Minify Fix](https://wordpress.org/plugins/wp-minify-fix/) combines and compresses enqueues CSS and JavaScript.
 
 ## Known issues ##
 
