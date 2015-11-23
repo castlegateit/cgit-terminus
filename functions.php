@@ -51,14 +51,11 @@ if ( ! function_exists('terminus_scripts_init') ) {
 
     function terminus_scripts_init () {
 
-        $uri = get_template_directory_uri();
-
-        // Add basic CSS reset
-        wp_enqueue_style('terminus-style', "$uri/style.css");
+        terminus_enqueue('style.css', array(), true);
 
         // If using Terminus itself, add basic layout
         if ( ! is_child_theme() ) {
-            wp_enqueue_style('terminus-style-default', "$uri/style-default.css");
+            terminus_enqueue('style-default.css');
         }
 
         // Add comment reply script
@@ -231,4 +228,82 @@ if ( ! function_exists('terminus_taxonomy') ) {
 
     }
 
+}
+
+/**
+ * Function to enqueue CSS and JavaScript
+ *
+ * Makes it easier to add cache-proof CSS and JavaScript files by automatically
+ * adding a version number as a query string based on the modified time of the
+ * file.
+ *
+ * The first argument identifies the file. If you enter a registered handle
+ * (e.g. "jquery"), the registered script will be enqueued. If you enter an
+ * absolute path or a full URL, the script will be enqueued unmodified. If you
+ * enter a file name or relative path to a file, the function will assume the
+ * path is relative to the theme directory.
+ *
+ * The second argument is an array of dependencies. Note that if they are not
+ * already registered, files enqueued with this function will use the file name
+ * or path as their registered handle, i.e. the first argument in this function
+ * when they were enqueued.
+ *
+ * The third argument is optional and only applies to relative paths with parent
+ * and child themes. By default, the function will enqueue files relative to the
+ * child theme directory. If this argument is true, if will enqueue the file
+ * relative to the parent theme directory.
+ *
+ * Unlike the default WordPress functions, this function can enqueue both CSS
+ * and JavaScript files. The file type is inferred from the file name extension.
+ */
+function terminus_enqueue($resource, $deps = array(), $parent = false) {
+    $theme = 'get_stylesheet_directory';
+    $enqueue = 'wp_enqueue_style';
+    $uri = $resource;
+    $theme_uri;
+    $path;
+    $version;
+
+    // Enqueue registered CSS
+    if (wp_style_is($resource, 'registered')) {
+        wp_enqueue_style($resource);
+        return;
+    }
+
+    // Enqueue registered JavaScript
+    if (wp_script_is($resource, 'registered')) {
+        wp_enqueue_script($resource);
+        return;
+    }
+
+    // Generate URL and path relative to parent theme
+    if ($parent) {
+        $theme = 'get_template_directory';
+    }
+
+    // Detect JavaScript resources based on extension
+    if (substr($resource, -3) == '.js') {
+        $enqueue = 'wp_enqueue_script';
+    }
+
+    // Absolute paths and full URLs are enqueued unmodified
+    if (substr($uri, 0, 1) == '/' || filter_var($uri, FILTER_VALIDATE_URL)) {
+        return $enqueue($resource, $uri, $deps);
+    }
+
+    // Generate full URL and path to resource within theme
+    $theme_uri = $theme . '_uri';
+    $uri = $theme_uri() . '/' . $resource;
+    $path = $theme() . '/' . $resource;
+
+    // Check resource exists within theme
+    if (!file_exists($path)) {
+        return trigger_error('Resource not found: ' . $resource);
+    }
+
+    // Generate version number based on file modified time
+    $version = filemtime($path);
+
+    // Enqueue with dependencies and version number
+    $enqueue($resource, $uri, $deps, $version);
 }
