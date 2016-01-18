@@ -254,9 +254,15 @@ if ( ! function_exists('terminus_taxonomy') ) {
  * relative to the parent theme directory.
  *
  * Unlike the default WordPress functions, this function can enqueue both CSS
- * and JavaScript files. The file type is inferred from the file name extension.
+ * and JavaScript files. The file type is inferred from the file name extension,
+ * or can be set using the fourth argument in the function.
  */
-function terminus_enqueue($resource, $deps = array(), $parent = false) {
+function terminus_enqueue(
+    $resource,
+    $deps = false,
+    $parent = false,
+    $type = false
+) {
     $theme = 'get_stylesheet_directory';
     $enqueue = 'wp_enqueue_style';
     $uri = $resource;
@@ -282,7 +288,7 @@ function terminus_enqueue($resource, $deps = array(), $parent = false) {
     }
 
     // Detect JavaScript resources based on extension
-    if (substr($resource, -3) == '.js') {
+    if ($type == 'js' || substr($resource, -3) == '.js') {
         $enqueue = 'wp_enqueue_script';
     }
 
