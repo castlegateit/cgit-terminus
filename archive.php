@@ -8,34 +8,36 @@ get_header();
 
 ?>
 
-    <div class="main" role="main">
-        <h1><?php
+<div class="main" role="main">
+    <h1>Archive<?php
 
-            if ( is_day() ) {
-                printf( 'Archive: %s', get_the_date('j F Y') );
-            } elseif ( is_month() ) {
-                printf( 'Archive: %s', get_the_date('F Y') );
-            } elseif ( is_year() ) {
-                printf( 'Archive: %s', get_the_date('Y') );
-            } else {
-                echo 'Archive';
-            }
+    if (is_date()) {
+        echo ': ';
+    }
 
-        ?></h1>
-        <?php
+    if (is_day()) {
+        echo get_the_date('j F Y');
+    } elseif (is_month()) {
+        echo get_the_date('F Y');
+    } elseif (is_year()) {
+        echo get_the_date('Y');
+    }
 
-            if ( have_posts() ) {
-                while ( have_posts() ) {
-                    the_post();
-                    get_template_part('content');
-                }
-                echo terminus_pagination();
-            } else {
-                get_template_part('content', 'none');
-            }
+    ?></h1>
+    <?php
 
-        ?>
-    </div>
+    if (have_posts()) {
+        while (have_posts()) {
+            the_post();
+            get_template_part('content');
+        }
+        echo terminus_pagination();
+    } else {
+        get_template_part('content', 'none');
+    }
+
+    ?>
+</div>
 
 <?php
 

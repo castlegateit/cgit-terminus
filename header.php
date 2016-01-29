@@ -15,7 +15,7 @@
 
 <meta charset="<?php bloginfo('charset'); ?>" />
 
-<title><?php wp_title('|', TRUE, 'right'); ?></title>
+<title><?php wp_title('|', true, 'right'); ?></title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -27,18 +27,20 @@
 
 <div class="header" role="banner">
 
-    <h1><a href="<?php echo esc_url( home_url('/') ); ?>"><?php bloginfo('name'); ?></a></h1>
+    <h1>
+        <a href="<?= esc_url(home_url('/')) ?>">
+            <?php bloginfo('name'); ?>
+        </a>
+    </h1>
     <p><?php bloginfo('description'); ?></p>
 
-    <div class="nav" role="navigation">
-        <?php
+    <div class="nav" role="navigation"><?php
 
-            wp_nav_menu(array(
-                'theme_location' => 'main-nav',
-            ));
+    wp_nav_menu([
+        'theme_location' => 'main-nav',
+    ]);
 
-        ?>
-    </div>
+    ?></div>
 
 </div>
 

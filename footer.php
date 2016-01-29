@@ -15,16 +15,16 @@
 
     <p>Copyright &copy; <?php
 
-        // Print a comma-separated list of authors
-        wp_list_authors(array(
-            'exclude_admin' => FALSE,
-            'hide_empty'    => FALSE,
-            'show_fullname' => TRUE,
-            'html'          => FALSE,
-        ));
+    // Print a comma-separated list of authors
+    wp_list_authors(array(
+        'exclude_admin' => false,
+        'hide_empty' => false,
+        'show_fullname' => true,
+        'html' => false,
+    ));
 
-        // Print the date
-        echo ' ' . date('Y');
+    // Print the date
+    echo ' ' . date('Y');
 
     ?></p>
 
