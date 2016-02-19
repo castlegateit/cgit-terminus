@@ -288,3 +288,21 @@ function terminus_enqueue(
     // Enqueue with dependencies and version number
     $enqueue($resource, $uri, $deps, $version);
 }
+
+/**
+ * Function to enqueue multiple CSS and JavaScript files
+ *
+ * Uses terminus_enqueue() to enqueue multiple files in the order in which they
+ * appear in an array, with each file depending on the previous files. Provides
+ * a quick way of enqueueing lots of scripts. All files must be part of the
+ * theme (cannot mix parent and child theme scripts) and all files must be of
+ * the same type.
+ */
+function terminus_enqueue_multiple($resources, $parent = false, $type = false) {
+    $deps = [];
+
+    foreach ($resources as $resource) {
+        terminus_enqueue($resource, $deps, $parent, $type);
+        $deps[] = $resource;
+    }
+}
