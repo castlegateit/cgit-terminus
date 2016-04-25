@@ -218,6 +218,9 @@ if (!function_exists('terminus_taxonomy')) {
  * enter a file name or relative path to a file, the function will assume the
  * path is relative to the theme directory.
  *
+ * If you enter an array of strings, each one will be enqueued in that order,
+ * with the previous resources as dependencies.
+ *
  * The second argument is an array of dependencies. Note that if they are not
  * already registered, files enqueued with this function will use the file name
  * or path as their registered handle, i.e. the first argument in this function
@@ -234,7 +237,7 @@ if (!function_exists('terminus_taxonomy')) {
  */
 function terminus_enqueue(
     $resource,
-    $deps = false,
+    $deps = [],
     $parent = false,
     $type = false
 ) {
@@ -244,6 +247,16 @@ function terminus_enqueue(
     $theme_uri;
     $path;
     $version;
+
+    // Enqueue multiple with dependencies
+    if (is_array($resource)) {
+        foreach ($resource as $item) {
+            terminus_enqueue($item, $deps, $parent, $type);
+            $deps[] = $item;
+        }
+
+        return;
+    };
 
     // Enqueue registered CSS
     if (wp_style_is($resource, 'registered')) {
