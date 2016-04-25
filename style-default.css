@@ -23,6 +23,13 @@ h2 a:hover {
     color: #06c;
 }
 
+/* Images */
+
+img {
+    height: auto;
+    max-width: 100%;
+}
+
 /* WordPress core */
 
 .wp-caption-text {

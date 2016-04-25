@@ -45,3 +45,5 @@
 </div>
 
 <div class="content">
+
+<?= cgit_breadcrumb() ?>
