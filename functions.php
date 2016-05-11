@@ -9,6 +9,13 @@
  * defined here can be overridden by defining them first in a child theme.
  */
 
+use Terminus\Resource;
+
+/**
+ * Load dependencies
+ */
+require_once __DIR__ . '/src/autoload.php';
+
 /**
  * Setup theme and register basic features
  */
@@ -45,7 +52,7 @@ add_action('init', 'terminus_head_init');
  */
 if (!function_exists('terminus_scripts_init')) {
     function terminus_scripts_init() {
-        terminus_enqueue('style.css', [], true);
+        terminus_enqueue('style.css', [], false, true);
 
         // If using Terminus itself, add basic layout
         if (!is_child_theme()) {
@@ -212,92 +219,38 @@ if (!function_exists('terminus_taxonomy')) {
  * adding a version number as a query string based on the modified time of the
  * file.
  *
- * The first argument identifies the file. If you enter a registered handle
- * (e.g. "jquery"), the registered script will be enqueued. If you enter an
- * absolute path or a full URL, the script will be enqueued unmodified. If you
- * enter a file name or relative path to a file, the function will assume the
- * path is relative to the theme directory.
+ * Existing registered file handles (e.g. "jquery") will be enqueued from
+ * WordPress as normal. Absolute paths and URLs will be enqueued unmodified.
+ * Relative paths will be enqueued relative to the active theme directory.
  *
- * If you enter an array of strings, each one will be enqueued in that order,
- * with the previous resources as dependencies.
+ * You can also specify an array of dependencies, the type of the resource
+ * (JavaScript true/false), and whether relative paths should resolve to the
+ * parent theme (true/false). If the type is not specified, the function will
+ * attempt to detect the type based on the file extension.
  *
- * The second argument is an array of dependencies. Note that if they are not
- * already registered, files enqueued with this function will use the file name
- * or path as their registered handle, i.e. the first argument in this function
- * when they were enqueued.
- *
- * The third argument is optional and only applies to relative paths with parent
- * and child themes. By default, the function will enqueue files relative to the
- * child theme directory. If this argument is true, if will enqueue the file
- * relative to the parent theme directory.
- *
- * Unlike the default WordPress functions, this function can enqueue both CSS
- * and JavaScript files. The file type is inferred from the file name extension,
- * or can be set using the fourth argument in the function.
+ * The first argument can also be an array of resources, each of which will be
+ * enqueued in order with each resource depending on the previous resources in
+ * the array.
  */
-function terminus_enqueue(
-    $resource,
-    $deps = [],
-    $parent = false,
-    $type = false
-) {
-    $theme = 'get_stylesheet_directory';
-    $enqueue = 'wp_enqueue_style';
-    $uri = $resource;
-    $theme_uri;
-    $path;
-    $version;
+function terminus_enqueue($src, $deps = [], $js = false, $parent = false) {
 
-    // Enqueue multiple with dependencies
-    if (is_array($resource)) {
-        foreach ($resource as $item) {
-            terminus_enqueue($item, $deps, $parent, $type);
+    // Enqueue multiple resources, assuming that each depends on the previous
+    // resources in the array.
+    if (is_array($src)) {
+        foreach ($src as $item) {
+            terminus_enqueue($item, $deps, $js, $parent);
             $deps[] = $item;
         }
 
         return;
-    };
-
-    // Enqueue registered CSS
-    if (wp_style_is($resource, 'registered')) {
-        wp_enqueue_style($resource);
-        return;
     }
 
-    // Enqueue registered JavaScript
-    if (wp_script_is($resource, 'registered')) {
-        wp_enqueue_script($resource);
-        return;
-    }
+    // Enqueue single resource
+    $resource = new Resource($src);
 
-    // Generate URL and path relative to parent theme
-    if ($parent) {
-        $theme = 'get_template_directory';
-    }
+    $resource->setDependencies($deps);
+    $resource->setScript($js);
+    $resource->setParent($parent);
 
-    // Detect JavaScript resources based on extension
-    if ($type == 'js' || substr($resource, -3) == '.js') {
-        $enqueue = 'wp_enqueue_script';
-    }
-
-    // Absolute paths and full URLs are enqueued unmodified
-    if (substr($uri, 0, 1) == '/' || filter_var($uri, FILTER_VALIDATE_URL)) {
-        return $enqueue($resource, $uri, $deps);
-    }
-
-    // Generate full URL and path to resource within theme
-    $theme_uri = $theme . '_uri';
-    $uri = $theme_uri() . '/' . $resource;
-    $path = $theme() . '/' . $resource;
-
-    // Check resource exists within theme
-    if (!file_exists($path)) {
-        return trigger_error('Resource not found: ' . $resource);
-    }
-
-    // Generate version number based on file modified time
-    $version = filemtime($path);
-
-    // Enqueue with dependencies and version number
-    $enqueue($resource, $uri, $deps, $version);
+    $resource->enqueue();
 }
