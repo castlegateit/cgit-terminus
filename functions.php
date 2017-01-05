@@ -52,13 +52,6 @@ add_action('init', 'terminus_head_init');
  */
 if (!function_exists('terminus_scripts_init')) {
     function terminus_scripts_init() {
-        terminus_enqueue('style.css', [], false, true);
-
-        // If using Terminus itself, add basic layout
-        if (!is_child_theme()) {
-            terminus_enqueue('style-default.css');
-        }
-
         // Add comment reply script
         if (is_singular() && comments_open() && get_option('thread_comments')) {
             wp_enqueue_script('comment-reply');
