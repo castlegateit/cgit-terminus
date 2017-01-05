@@ -21,7 +21,6 @@ require_once __DIR__ . '/src/autoload.php';
  */
 if (!function_exists('terminus_init')) {
     function terminus_init() {
-        add_editor_style();
         add_theme_support('automatic-feed-links');
         add_theme_support('post-thumbnails');
     }
