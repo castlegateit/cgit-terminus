@@ -8,10 +8,16 @@
     the_time(get_option('date_format'));
 
     // Categories
-    echo terminus_taxonomy('category', ' | Categories: ', ', ');
+    echo \Cgit\Terminus::taxonomy([
+        'taxonomy' => 'category',
+        'before' => ' | Categories: ',
+    ]);
 
     // Tags
-    echo terminus_taxonomy('post_tag', ' | Tags: ', ', ');
+    echo \Cgit\Terminus::taxonomy([
+        'taxonomy' => 'post_tag',
+        'before' => ' | Tags: ',
+    ]);
 
     // Comments
     if (get_comments_number() > 0) {

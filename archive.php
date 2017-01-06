@@ -22,7 +22,8 @@ get_header();
             the_post();
             get_template_part('content');
         }
-        echo terminus_pagination();
+
+        echo \Cgit\Terminus::pagination();
     } else {
         get_template_part('content', 'none');
     }
