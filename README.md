@@ -59,6 +59,7 @@ $foo->meta(); // get all meta information as an array
 $foo->meta('alt'); // get particular meta field
 $foo->element(); // get image element with fill size image
 $foo->element('medium'); // get image element at a particular size
+$foo->data('medium'); // get data URI
 ~~~
 
 The `element()` method can also take an associative array of attribute keys and values to be added to the HTML element. If the `element()` method is provided with an associative array of sizes, it generates a responsive `<picture>` element:

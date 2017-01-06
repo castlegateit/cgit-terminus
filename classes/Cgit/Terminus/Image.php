@@ -75,6 +75,10 @@ class Image
     {
         $permitted = ['alt', 'class', 'id', 'style', 'title'];
 
+        if (!$atts) {
+            return [];
+        }
+
         foreach ($atts as $key => $value) {
             if (!in_array($key, $permitted) && strpos($key, 'data-') !== 0) {
                 unset($atts[$key]);
@@ -246,17 +250,44 @@ class Image
     }
 
     /**
+     * Return data URI
+     *
+     * @param string $size
+     * @return string
+     */
+    public function data($size = false)
+    {
+        $path = $this->meta('file_path');
+
+        if ($size) {
+            $path = str_replace(
+                $this->meta('file_name'),
+                basename($this->url($size)),
+                $path
+            );
+        }
+
+        return 'data:' . $this->meta('mime_type') . ';base64,'
+            . base64_encode(file_get_contents($path));
+    }
+
+    /**
      * Return HTML element
      *
      * Provided with a single size, this will create an HTML <img> element with
      * the specified attributes. Provided with an array of sizes, this will
      * create a responsive <picture> element.
      *
+     * The data option lets you return the image source as a base64 encoded
+     * string. This only applies to <img> elements; responsive base64 encoded
+     * <picture> elements would waste bandwidth instead of saving it!
+     *
      * @param string $size
      * @param array $atts
+     * @param boolean $data
      * @return string
      */
-    public function element($size = 'full', $atts = [])
+    public function element($size = 'full', $atts = [], $data = false)
     {
         if (is_array($size)) {
             return $this->responsiveElement($size, $atts);
@@ -265,7 +296,7 @@ class Image
         // Restrict the attributes to valid image attributes and set the image
         // src and alt attributes.
         $atts = self::sanitizeAttributes($atts);
-        $atts['src'] = $this->url($size);
+        $atts['src'] = $data ? $this->data($size) : $this->url($size);
 
         if (!isset($atts['alt'])) {
             $atts['alt'] = $this->meta('alt');
