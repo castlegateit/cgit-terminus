@@ -145,6 +145,63 @@ class Post
 
         $this->excerpt = apply_filters('the_excerpt', $excerpt);
     }
+
+    /**
+     * Normalize headings
+     *
+     * Promote or demote headings within the HTML content to fit the surrounding
+     * document outline.
+     *
+     * @param int $limit
+     * @return void
+     */
+    public function normalizeHeadings($limit = 2)
+    {
+        $levels = range(1, 6);
+        $diff = 0;
+
+        // Identify the difference between the current maximum heading level and
+        // the desired maximum heading level.
+        foreach ($levels as $level) {
+            if (strpos($this->content, '<h' . $level) !== false) {
+                $diff = $limit - $level;
+                break;
+            }
+        }
+
+        // If there is no difference between the current and the desired maximum
+        // heading levels, return the content unmodified.
+        if ($diff == 0 || !in_array($limit, $levels)) {
+            return $this->content;
+        }
+
+        // Promote or demote the headings using a callback that can calculate
+        // the necessary find and replace parameters on the fly.
+        $this->content = preg_replace_callback(
+            '/(<\/?)h(\d)/',
+            function ($matches) use ($levels, $diff) {
+                $level = intval($matches[2]) + $diff;
+                $tag = in_array($level, $levels) ? 'h' . $level : 'p';
+
+                return $matches[1] . $tag;
+            },
+            $this->content
+        );
+    }
+
+    /**
+     * Reset headings
+     *
+     * Undo the effects the normalize headings method, restoring the content to
+     * its original filtered state.
+     *
+     * @return void
+     */
+    public function resetHeadings()
+    {
+        $this->setPostContent();
+    }
+
     /**
      * Return post object
      *
