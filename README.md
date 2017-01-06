@@ -21,6 +21,55 @@ Terminus provides the `\Cgit\Terminus` class, which contains various static meth
 
 *   `Terminus::taxonomy($args = [])` generates a comma-separated string of HTML taxonomy links for a particular post, without the annoying `rel` attributes.
 
+### Post class ###
+
+It can be difficult to get the final, filtered content or excerpt of a post without printing it within the loop. The `\Cgit\Terminus\Post` class makes it easier to get these values.
+
+~~~ php
+$foo = new \Cgit\Terminus\Post(16);
+
+echo $foo->id();
+echo $foo->title();
+echo $foo->url();
+echo $foo->content();
+echo $foo->excerpt();
+~~~
+
+You can also use the `post()` method to get the original `WP_Post` object.
+
+### Image class ###
+
+Image attachments, featured images, and ACF image fields are all accessed in different ways. The `\Cgit\Terminus\Image` class provides a consistent interface for getting image URLs of any size. Its constructor can take an image attachment object, an image ID, a post object or post ID (which uses the featured image for that post), or an ACF field name (with optional post ID):
+
+~~~ php
+use \Cgit\Terminus\Image;
+
+$foo = new Image($image_id); // image attachment
+$foo = new Image($post_id); // featured image for post
+$foo = new Image($field); // ACF image for current post
+$foo = new Image($field, $post_id); // ACF image by post object or ID
+~~~
+
+You can then obtain various information about the image or generate an HTML `<img>` element:
+
+~~~ php
+$foo->url(); // URL of original image
+$foo->url('medium'); // URL of image at a particular size
+$foo->meta(); // get all meta information as an array
+$foo->meta('alt'); // get particular meta field
+$foo->element(); // get image element with fill size image
+$foo->element('medium'); // get image element at a particular size
+~~~
+
+The `element()` method can also take an associative array of attribute keys and values to be added to the HTML element. If the `element()` method is provided with an associative array of sizes, it generates a responsive `<picture>` element:
+
+~~~ php
+$foo->element([
+    'medium' => '(max-width: 480px)',
+    'large' => '(max-width: 960px)',
+]);
+~~~
+
 ## Child themes ##
 
 The best way to customize Terminus is to use a child theme. You can use this to replace any of the template files in Terminus. The file `functions.php` is a special case: the parent version will always be loaded, but only _after_ the child version.
