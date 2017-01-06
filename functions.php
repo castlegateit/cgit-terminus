@@ -32,6 +32,8 @@ $theme_class::getInstance();
  *
  * This is a wrapper for the enqueue method in the Terminus utility class and is
  * provided for backward compatibility.
+ *
+ * @deprecated 2.0
  */
 function terminus_enqueue($src, $deps = [], $script = false, $parent = false)
 {
@@ -45,6 +47,8 @@ function terminus_enqueue($src, $deps = [], $script = false, $parent = false)
  * is provided for backward compatibility. The output of the pagination method
  * can be modified by passing parameters, but these were not available in the
  * original pagination function.
+ *
+ * @deprecated 2.0
  */
 function terminus_pagination()
 {
@@ -58,6 +62,8 @@ function terminus_pagination()
  * is provided for backward compatibility. The taxonomy method uses an array to
  * set options, in contrast to the large number of parameters passed to the
  * original taxonomy function.
+ *
+ * @deprecated 2.0
  */
 function terminus_taxonomy(...$args)
 {
