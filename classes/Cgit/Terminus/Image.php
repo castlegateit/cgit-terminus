@@ -175,19 +175,21 @@ class Image
      * Set image ID based on image attachment
      *
      * @param mixed $image
-     * @return void
+     * @return self
      */
     public function setImage($image)
     {
         $this->id = get_post($image)->ID;
         $this->setImageMeta();
+
+        return $this;
     }
 
     /**
      * Set image ID based on post featured image
      *
      * @param mixed $post
-     * @return void
+     * @return self
      */
     public function setPost($post = 0)
     {
@@ -196,6 +198,8 @@ class Image
         }
 
         $this->setImage(get_post_thumbnail_id($post));
+
+        return $this;
     }
 
     /**
@@ -203,7 +207,7 @@ class Image
      *
      * @param string $field
      * @param int $post
-     * @return void
+     * @return self
      */
     public function setField($field, $post = 0)
     {
@@ -221,6 +225,8 @@ class Image
         }
 
         $this->useImage($value);
+
+        return $this;
     }
 
     /**

@@ -153,7 +153,7 @@ class Post
      * document outline.
      *
      * @param int $limit
-     * @return void
+     * @return self
      */
     public function normalizeHeadings($limit = 2)
     {
@@ -172,7 +172,7 @@ class Post
         // If there is no difference between the current and the desired maximum
         // heading levels, return the content unmodified.
         if ($diff == 0 || !in_array($limit, $levels)) {
-            return $this->content;
+            return $this;
         }
 
         // Promote or demote the headings using a callback that can calculate
@@ -187,6 +187,8 @@ class Post
             },
             $this->content
         );
+
+        return $this;
     }
 
     /**
@@ -195,11 +197,13 @@ class Post
      * Undo the effects the normalize headings method, restoring the content to
      * its original filtered state.
      *
-     * @return void
+     * @return self
      */
     public function resetHeadings()
     {
         $this->setPostContent();
+
+        return $this;
     }
 
     /**

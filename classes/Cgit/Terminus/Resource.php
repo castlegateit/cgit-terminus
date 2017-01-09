@@ -133,18 +133,20 @@ class Resource
      * Set resource type to script
      *
      * @param boolean $script
-     * @return void
+     * @return self
      */
     public function setScript($script)
     {
         $this->script = $script ? true : false;
+
+        return $this;
     }
 
     /**
      * Set resource location to parent theme
      *
      * @param boolean $parent
-     * @return void
+     * @return self
      */
     public function setParent($parent)
     {
@@ -154,6 +156,8 @@ class Resource
             $this->themeDir = get_template_directory();
             $this->themeUrl = get_template_directory_uri();
         }
+
+        return $this;
     }
 
     /**
