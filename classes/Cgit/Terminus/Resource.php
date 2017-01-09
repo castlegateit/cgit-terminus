@@ -107,7 +107,7 @@ class Resource
             $strs = [];
 
             foreach ($source as $str) {
-                $strs[] = self::sanitize($source);
+                $strs[] = self::sanitize($str);
             }
 
             return $strs;
@@ -137,7 +137,7 @@ class Resource
      */
     public function setScript($script)
     {
-        $this->script = $script ? true : false;
+        $this->script = (bool) $script;
 
         return $this;
     }
@@ -150,7 +150,7 @@ class Resource
      */
     public function setParent($parent)
     {
-        $this->parent = $parent ? true : false;
+        $this->parent = (bool) $parent;
 
         if ($this->parent) {
             $this->themeDir = get_template_directory();
