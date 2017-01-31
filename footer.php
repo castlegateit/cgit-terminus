@@ -12,7 +12,6 @@
 </div>
 
 <div class="footer" role="contentinfo">
-
     <p>Copyright &copy; <?php
 
     // Print a comma-separated list of authors
@@ -27,7 +26,6 @@
     echo ' ' . date('Y');
 
     ?></p>
-
 </div>
 
 <?php wp_footer(); ?>

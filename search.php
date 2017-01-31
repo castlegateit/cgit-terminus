@@ -10,6 +10,7 @@ get_header();
 
 <div class="main" role="main">
     <h1>Search: <?= get_search_query() ?></h1>
+
     <?php
 
     if (have_posts()) {

@@ -26,22 +26,23 @@
 <body <?php body_class(); ?>>
 
 <div class="header" role="banner">
-
     <h1>
         <a href="<?= esc_url(home_url('/')) ?>">
             <?php bloginfo('name'); ?>
         </a>
     </h1>
+
     <p><?php bloginfo('description'); ?></p>
 
-    <div class="nav" role="navigation"><?php
+    <div class="nav" role="navigation">
+        <?php
 
-    wp_nav_menu([
-        'theme_location' => 'main-nav',
-    ]);
+        wp_nav_menu([
+            'theme_location' => 'main-nav',
+        ]);
 
-    ?></div>
-
+        ?>
+    </div>
 </div>
 
 <div class="content">
