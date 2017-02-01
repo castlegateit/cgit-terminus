@@ -65,8 +65,9 @@ function terminus_pagination()
  *
  * @deprecated 2.0
  */
-function terminus_taxonomy(...$args)
+function terminus_taxonomy()
 {
+    $args = func_get_args();
     $keys = ['taxonomy', 'before', 'sep', 'after', 'exclude'];
     $keys = array_slice($keys, 0, count($args));
 
