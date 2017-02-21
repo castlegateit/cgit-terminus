@@ -32,15 +32,11 @@ class Theme
      */
     private function __construct()
     {
-        // Register theme features via WordPress actions
-        add_action('after_theme_setup', [$this, 'registerFeatures']);
+        add_action('init', [$this, 'registerFeatures']);
         add_action('init', [$this, 'registerActions']);
         add_action('init', [$this, 'registerMenus']);
         add_action('widgets_init', [$this, 'registerWidgets']);
         add_action('wp_enqueue_scripts', [$this, 'registerScripts']);
-
-        // Edit the default page title via a WordPress filter
-        add_filter('wp_title', [$this, 'editPageTitle'], 10, 2);
     }
 
     /**
@@ -70,6 +66,7 @@ class Theme
 
         add_theme_support('automatic-feed-links');
         add_theme_support('post-thumbnails');
+        add_theme_support('title-tag');
     }
 
     /**
@@ -145,39 +142,5 @@ class Theme
         if (is_singular() && comments_open() && get_option('thread_comments')) {
             wp_enqueue_script('comment-reply');
         }
-    }
-
-    /**
-     * Edit the default page title
-     *
-     * @param string $title
-     * @param string $sep
-     * @return string
-     */
-    public function editPageTitle($title, $sep)
-    {
-        if (function_exists('terminus_title')) {
-            return terminus_title($title, $sep);
-        }
-
-        global $page, $paged;
-
-        if (is_feed()) {
-            return $title;
-        }
-
-        $title .= get_bloginfo('name');
-        $description = get_bloginfo('description');
-
-        if ($description && (is_home() || is_front_page())) {
-            $title = implode(' ', [$title, $sep, $description]);
-        }
-
-        if ($page > 1 || $paged > 1) {
-            $max = max($page, $paged);
-            $title = implode(' ', [$title, $sep, 'Page', $max]);
-        }
-
-        return $title;
     }
 }
