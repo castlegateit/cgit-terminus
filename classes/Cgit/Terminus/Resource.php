@@ -86,10 +86,9 @@ class Resource
         $this->handle = self::sanitize($source);
         $this->deps = self::sanitize($deps);
 
-        $this->themeDir = get_stylesheet_directory();
-        $this->themeUrl = get_stylesheet_directory_uri();
-
+        // Set default resource type and theme directory
         $this->detectScript();
+        $this->setParent(false);
     }
 
     /**
@@ -155,6 +154,9 @@ class Resource
         if ($this->parent) {
             $this->themeDir = get_template_directory();
             $this->themeUrl = get_template_directory_uri();
+        } else {
+            $this->themeDir = get_stylesheet_directory();
+            $this->themeUrl = get_stylesheet_directory_uri();
         }
 
         return $this;

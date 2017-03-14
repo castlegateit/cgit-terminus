@@ -57,8 +57,8 @@ class Terminus
     public static function enqueue(
         $source,
         $deps = [],
-        $script = false,
-        $parent = false
+        $script = null,
+        $parent = null
     ) {
         // Enqueue an array of resources, where each one depends on the previous
         // resources in the array.
@@ -74,8 +74,14 @@ class Terminus
         // Create and enqueue a new resource
         $resource = new \Cgit\Terminus\Resource($source, $deps);
 
-        $resource->setScript($script);
-        $resource->setParent($parent);
+        if (!is_null($script)) {
+            $resource->setScript($script);
+        }
+
+        if (!is_null($parent)) {
+            $resource->setParent($parent);
+        }
+
         $resource->enqueue();
 
         // Save the resource handle for future reference

@@ -35,7 +35,7 @@ $theme_class::getInstance();
  *
  * @deprecated 2.0
  */
-function terminus_enqueue($src, $deps = [], $script = false, $parent = false)
+function terminus_enqueue($src, $deps = [], $script = null, $parent = null)
 {
     return Terminus::enqueue($src, $deps, $script, $parent);
 }
