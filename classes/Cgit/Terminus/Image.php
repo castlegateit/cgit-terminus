@@ -218,13 +218,18 @@ class Image
         $post = $post ?: $this->defaultPostId;
         $value = get_field($field, $post);
 
+        // Check the image field has a value
+        if (!$value) {
+            return;
+        }
+
         // The return value of the custom field might be the image ID or it
         // might be an array of data that includes that image ID.
         if (is_array($value)) {
             $value = $value['id'];
         }
 
-        $this->useImage($value);
+        $this->setImage($value);
 
         return $this;
     }
@@ -237,6 +242,10 @@ class Image
      */
     public function url($size = 'full')
     {
+        if (!$this->id) {
+            return;
+        }
+
         return wp_get_attachment_image_src($this->id, $size)[0];
     }
 
