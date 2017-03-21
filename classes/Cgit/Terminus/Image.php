@@ -15,7 +15,7 @@ class Image
      *
      * @var int
      */
-    private $id;
+    private $id = 0;
 
     /**
      * Image meta data
@@ -25,7 +25,7 @@ class Image
     private $meta = [];
 
     /**
-     * Default post ID
+     * Default post ID for featured images
      *
      * @var int
      */
@@ -45,7 +45,7 @@ class Image
     }
 
     /**
-     * Set default post ID to current post
+     * Set default post ID
      *
      * If we are getting a featured image or a custom field and the post ID has
      * not been specified, this will be used instead.
@@ -59,6 +59,143 @@ class Image
         if (is_a($post, 'WP_Post')) {
             $this->defaultPostId = $post->ID;
         }
+    }
+
+    /**
+     * Load image
+     *
+     * If the image parameter is a string, assume that it is an ACF field name
+     * and use that field. If the image parameter is an image attachment ID or
+     * object, use that object. If the image parameter is a post ID or object,
+     * attempt to use the featured image for that post.
+     *
+     * @param mixed $image
+     * @param mixed $post
+     * @return void
+     */
+    public function set($image, $post = 0)
+    {
+        if (is_string($image)) {
+            return $this->setImageByField($image, $post);
+        }
+
+        if (get_post_type($image) == 'attachment') {
+            return $this->setImageByImage($image);
+        }
+
+        return $this->setImageByPost($image);
+    }
+
+    /**
+     * Load image by image object or ID
+     *
+     * @return void
+     */
+    private function setImageByImage($image)
+    {
+        $object = get_post($image);
+
+        if (!$object) {
+            return $this->reset();
+        }
+
+        $this->id = $object->ID;
+        $this->setImageMeta();
+    }
+
+    /**
+     * Load featured image by post object or ID
+     *
+     * @return void
+     */
+    private function setImageByPost($post = 0)
+    {
+        if (!$post) {
+            $post = $this->defaultPostId;
+        }
+
+        $object = get_post($post);
+        $image = get_post_thumbnail_id($object->ID);
+
+        if (!$object || !$image) {
+            return $this->reset();
+        }
+
+        $this->id = $image->ID;
+        $this->setImageMeta();
+    }
+
+    /**
+     * Load image from ACF custom field
+     *
+     * @return void
+     */
+    private function setImageByField($field, $post = 0)
+    {
+        if (!function_exists('get_field')) {
+            return trigger_error('ACF functions not available');
+        }
+
+        $post = $post ?: $this->defaultPostId;
+        $object = get_post($post);
+        $value = get_field($field, $object->ID);
+
+        // No value
+        if (!$value) {
+            return $this->reset();
+        }
+
+        // Convert ACF array into image ID
+        if (is_array($value) && isset($value['id'])) {
+            $value = $value['id'];
+        }
+
+        $this->setImageByImage($value);
+    }
+
+    /**
+     * Reset all values
+     *
+     * @return void
+     */
+    private function reset()
+    {
+        $this->id = 0;
+        $this->meta = [];
+    }
+
+    /**
+     * Set image meta based on the current image ID
+     *
+     * @return void
+     */
+    private function setImageMeta()
+    {
+        // Load the raw post information from WordPress
+        $obj = get_post($this->id);
+        $meta = get_post_meta($this->id);
+        $file = '';
+        $alt = '';
+
+        if (isset($meta['_wp_attached_file'])) {
+            $file = $meta['_wp_attached_file'][0];
+        }
+
+        if (isset($meta['_wp_attachment_image_alt'])) {
+            $alt = $meta['_wp_attachment_image_alt'][0];
+        }
+
+        // Assign the information to the instance property
+        $this->meta = [
+            'url' => $this->url(),
+            'file_name' => basename($file),
+            'file_path' => wp_upload_dir()['basedir'] . '/' . $file,
+            'mime_type' => get_post_mime_type($this->id),
+            'title' => $obj->post_title,
+            'alt' => $alt,
+            'caption' => $obj->post_excerpt,
+            'description' => apply_filters('the_content', $obj->post_content),
+        ];
     }
 
     /**
@@ -114,127 +251,6 @@ class Image
     }
 
     /**
-     * Set image meta data
-     *
-     * @return void
-     */
-    private function setImageMeta()
-    {
-        // Retrieve the raw post information from WordPress
-        $obj = get_post($this->id);
-        $obj_meta = get_post_meta($this->id);
-        $obj_type = get_post_mime_type($this->id);
-        $obj_file = $obj_meta['_wp_attached_file'][0];
-
-        // Retrieve alt text if available
-        $alt = '';
-
-        if (isset($obj_meta['_wp_attachment_image_alt'])) {
-            $alt = $obj_meta['_wp_attachment_image_alt'][0];
-        }
-
-        // Assign the relevant information to the instance
-        $this->meta = [
-            'url' => $this->url(),
-            'file_name' => basename($obj_file),
-            'file_path' => wp_upload_dir()['basedir'] . '/' . $obj_file,
-            'mime_type' => $obj_type,
-            'title' => $obj->post_title,
-            'alt' => $alt,
-            'caption' => $obj->post_excerpt,
-            'description' => apply_filters('the_content', $obj->post_content),
-        ];
-    }
-
-    /**
-     * Set image ID
-     *
-     * Given a string, sets the image to an ACF custom field with that name.
-     * Otherwise, checks whether the ID or object represents an image attachment
-     * or something else and sets the image to the attachment or the featured
-     * image respectively.
-     *
-     * @param mixed $image
-     * @param mixed $post
-     * @return void
-     */
-    public function set($image, $post = 0)
-    {
-        if (is_string($image)) {
-            return $this->setField($image, $post);
-        }
-
-        if (get_post_type($image) == 'attachment') {
-            return $this->setImage($image);
-        }
-
-        return $this->setPost($image);
-    }
-
-    /**
-     * Set image ID based on image attachment
-     *
-     * @param mixed $image
-     * @return self
-     */
-    public function setImage($image)
-    {
-        $this->id = get_post($image)->ID;
-        $this->setImageMeta();
-
-        return $this;
-    }
-
-    /**
-     * Set image ID based on post featured image
-     *
-     * @param mixed $post
-     * @return self
-     */
-    public function setPost($post = 0)
-    {
-        if (!$post) {
-            $post = $this->defaultPostId;
-        }
-
-        $this->setImage(get_post_thumbnail_id($post));
-
-        return $this;
-    }
-
-    /**
-     * Set image ID based on ACF custom field
-     *
-     * @param string $field
-     * @param int $post
-     * @return self
-     */
-    public function setField($field, $post = 0)
-    {
-        if (!function_exists('get_field')) {
-            return trigger_error('ACF not available');
-        }
-
-        $post = $post ?: $this->defaultPostId;
-        $value = get_field($field, $post);
-
-        // Check the image field has a value
-        if (!$value) {
-            return;
-        }
-
-        // The return value of the custom field might be the image ID or it
-        // might be an array of data that includes that image ID.
-        if (is_array($value)) {
-            $value = $value['id'];
-        }
-
-        $this->setImage($value);
-
-        return $this;
-    }
-
-    /**
      * Return image URL
      *
      * @param string $size
@@ -261,7 +277,11 @@ class Image
             return $this->meta;
         }
 
-        return $this->meta[$field];
+        if (isset($this->meta[$field])) {
+            return $this->meta[$field];
+        }
+
+        return;
     }
 
     /**
@@ -272,6 +292,10 @@ class Image
      */
     public function data($size = false)
     {
+        if (!$this->id) {
+            return;
+        }
+
         $path = $this->meta('file_path');
 
         if ($size) {
@@ -304,6 +328,10 @@ class Image
      */
     public function element($size = 'full', $atts = [], $data = false)
     {
+        if (!$this->id) {
+            return;
+        }
+
         if (is_array($size)) {
             return $this->responsiveElement($size, $atts);
         }
