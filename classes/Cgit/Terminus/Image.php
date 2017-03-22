@@ -115,13 +115,13 @@ class Image
         }
 
         $object = get_post($post);
-        $image = get_post_thumbnail_id($object->ID);
+        $image_id = get_post_thumbnail_id($object->ID);
 
-        if (!$object || !$image) {
+        if (!$object || !$image_id) {
             return $this->reset();
         }
 
-        $this->id = $image->ID;
+        $this->id = $image_id;
         $this->setImageMeta();
     }
 
