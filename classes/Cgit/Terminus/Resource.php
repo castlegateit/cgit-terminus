@@ -206,7 +206,7 @@ class Resource
         }
 
         // Enqueue resources by URL
-        if (filter_var($this->source, FILTER_VALIDATE_URL)) {
+        if (!is_null(parse_url($this->source, PHP_URL_HOST))) {
             return $function($this->handle, $this->source, $this->deps);
         }
 
