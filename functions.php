@@ -8,8 +8,6 @@
  * It also activates support for various WordPress features.
  */
 
-use Cgit\Terminus;
-
 require_once __DIR__ . '/classes/autoload.php';
 
 /**
@@ -25,7 +23,7 @@ if (defined('TERMINUS_THEME_CLASS')) {
     $theme_class = TERMINUS_THEME_CLASS;
 }
 
-$theme_class::getInstance();
+$theme = new $theme_class;
 
 /**
  * Enqueue CSS and JavaScript
@@ -37,7 +35,7 @@ $theme_class::getInstance();
  */
 function terminus_enqueue($src, $deps = [], $script = null, $parent = null)
 {
-    return Terminus::enqueue($src, $deps, $script, $parent);
+    return \Cgit\Terminus::enqueue($src, $deps, $script, $parent);
 }
 
 /**
@@ -52,7 +50,7 @@ function terminus_enqueue($src, $deps = [], $script = null, $parent = null)
  */
 function terminus_pagination()
 {
-    return Terminus::pagination();
+    return \Cgit\Terminus::pagination();
 }
 
 /**
@@ -71,5 +69,5 @@ function terminus_taxonomy()
     $keys = ['taxonomy', 'before', 'sep', 'after', 'exclude'];
     $keys = array_slice($keys, 0, count($args));
 
-    return Terminus::taxonomy(array_combine($keys, $args));
+    return \Cgit\Terminus::taxonomy(array_combine($keys, $args));
 }

@@ -5,23 +5,16 @@ namespace Cgit\Terminus;
 /**
  * Terminus theme configuration
  *
- * A singleton class that registers the basic features of the Terminus theme,
- * including actions, menus, widgets, and scripts. For backward-compatibility
- * these can be overridden by functions defined in a child theme. The entire
- * class can also be extended or replaced with a compatible class defined in the
- * child theme by defining the TERMINUS_THEME_CLASS constant.
+ * A class that registers the basic features of the Terminus theme, including
+ * actions, menus, widgets, and scripts. For backward-compatibility these can be
+ * overridden by functions defined in a child theme. The entire class can also
+ * be extended or replaced with a compatible class defined in the child theme by
+ * defining the TERMINUS_THEME_CLASS constant.
  */
 class Theme
 {
     /**
-     * Singleton instance
-     *
-     * @var self
-     */
-    private static $instance;
-
-    /**
-     * Private constructor
+     * Constructor
      *
      * Registers the basic features of the Terminus theme via WordPress actions
      * and sets the page title format via a filter. For backward compatibility,
@@ -30,27 +23,13 @@ class Theme
      *
      * @return void
      */
-    private function __construct()
+    public function __construct()
     {
         add_action('init', [$this, 'registerFeatures']);
         add_action('init', [$this, 'registerActions']);
         add_action('init', [$this, 'registerMenus']);
         add_action('widgets_init', [$this, 'registerWidgets']);
         add_action('wp_enqueue_scripts', [$this, 'registerScripts']);
-    }
-
-    /**
-     * Return the singleton instance
-     *
-     * @return self
-     */
-    public static function getInstance()
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self;
-        }
-
-        return self::$instance;
     }
 
     /**
