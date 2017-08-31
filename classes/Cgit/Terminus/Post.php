@@ -265,4 +265,19 @@ class Post
     {
         return $this->excerpt;
     }
+
+    /**
+     * Return post date
+     *
+     * If a PHP date format string is provided, the date will be returned in
+     * that format. Otherwise, the date will be formatted according to the
+     * WordPress date_format option.
+     *
+     * @param string $format
+     * @return string
+     */
+    public function date($format = '')
+    {
+        return get_the_date($format, $this->post);
+    }
 }
