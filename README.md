@@ -117,3 +117,23 @@ The basic theme configuration is now carried out by `\Cgit\Terminus\Theme`, whic
 The enqueue, pagination, and taxonomy functions from previous versions of Terminus have become static methods of the `\Cgit\Terminus` class. The original functions are still provided in version 2.0, but they simply wrappers for the corresponding static class methods and they may be removed in future versions.
 
 Previous versions of Terminus provided separate `author.php`, `category.php`, and `tag.php` templates. From version 2.0, it only provides `archive.php` for all archive types. This makes it easier to override the archive template(s) in child themes.
+
+## License
+
+Copyright (c) 2019 Castlegate IT. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+## License
+
+Copyright (c) 2019 Castlegate IT. All rights reserved.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
